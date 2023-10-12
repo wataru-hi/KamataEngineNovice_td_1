@@ -35,6 +35,12 @@ typedef struct Trap//トラップの変数
 	EdgePosition edgePosition;
 }Trap;
 
+typedef struct BackPage
+{
+	Vector2 pos1;
+	Vector2 pos2;
+}BackPage;
+
 typedef struct JumpPower
 {
 	float first;
@@ -117,6 +123,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// スクロール用の変数
 	//========================================
 	int scrollPosX = 0;
+
+	BackPage backPage
+	{
+		{    0.0f, 0.0f,},
+		{-1280.0f, 0.0f,},
+	};
 	//========================================
 	//========================================
 
@@ -128,11 +140,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	srand((unsigned int)time(NULL));//乱数の初期化
 
-
-
 	//========================================
 	//========================================
 
+	//========================================
+	// 画像ファイルの読み込み
+	//========================================
+	int gameBackGround = Novice::LoadTexture("./resources/BackGround/BackGround.png");
+
+	
+	//========================================
+	//========================================
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -192,6 +210,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 
 		player.worldPosition.x += player.velocity.x;
+		//==============
+		//背景用
+		//==============
+		backPage.pos1.x += player.velocity.x;
+		backPage.pos2.x += player.velocity.x;
+
+		if (backPage.pos1.x >= 1280)
+		{
+			backPage.pos1.x -= 1280 * 2;
+		}
+		if (backPage.pos2.x >= 1280)
+		{
+			backPage.pos2.x -= 1280 * 2;
+		}
+		//==============
+		//==============
 
 		scrollPosX = (int)player.worldPosition.x - 640;
 		if (scrollPosX < 0)
@@ -283,6 +317,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓描画処理ここから
 		///
+		Novice::DrawSprite
+		(
+			(int)backPage.pos1.x, (int)backPage.pos1.y,
+			gameBackGround, 1, 1, 0.0f, WHITE
+		);
+
+		Novice::DrawSprite
+		(
+			(int)backPage.pos2.x, (int)backPage.pos2.y,
+			gameBackGround, 1, 1, 0.0f, WHITE
+		);
+		
 		Novice::DrawBox
 		(
 			(int)(player.worldPosition.x - (player.radius + scrollPosX)), (int)(player.newPosY - player.radius),
@@ -297,7 +343,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			0.0f, BLUE, kFillModeSolid
 		);
 	
-		Novice::ScreenPrintf(0, 0, "testGit");
+		Novice::ScreenPrintf(0, 0, "x1 %.0f, x2 %.0f",backPage.pos1.x, backPage.pos2.x);
 		Novice::ScreenPrintf(0, 20, "testGit - 1");
 		///
 		/// ↑描画処理ここまで
