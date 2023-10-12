@@ -28,7 +28,6 @@ typedef struct Player//プレイヤーの変数
 
 typedef struct Trap//トラップの変数
 {
-	int number;
 	Vector2 position;
 	float newPosY;
 	float radius;
@@ -74,6 +73,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	char keys[256] = {0};
 	char preKeys[256] = {0};
 
+	srand((unsigned int)time(NULL));//乱数の初期化
+
 	//========================================
 	//プレイヤーに関する変数
 	//========================================
@@ -85,7 +86,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		{0.0f,-0.8f},
 		30.0f,
 	};
-	int jumpCount = 0;
 
 	JumpPower jumpPower//ジャンプ力
 	{
@@ -105,17 +105,49 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//========================================
 	// 箱に関する変数
 	//========================================
-	Trap trap;
+	/*Trap trap1;
 	
-	trap.radius = 90.0f;
+	trap1.radius = 90.0f;
 
-	trap.position = { 1000.0f,trap.radius};
-	trap.newPosY = (trap.position.y - world) * -1.0f;
+	trap1.position = { 1000.0f,trap1.radius};
+	trap1.newPosY = (trap1.position.y - world) * -1.0f;
 	
-	trap.edgePosition.right = trap.position.x + trap.radius;
-	trap.edgePosition.left = trap.position.x - trap.radius;
-	trap.edgePosition.up = trap.position.y + trap.radius;
-	trap.edgePosition.down = trap.position.y - trap.radius;
+	trap1.edgePosition.right = trap1.position.x + trap1.radius;
+	trap1.edgePosition.left = trap1.position.x - trap1.radius;
+	trap1.edgePosition.up = trap1.position.y + trap1.radius;
+	trap1.edgePosition.down = trap1.position.y - trap1.radius;
+
+	
+	
+	Trap trap2;
+
+	trap2.radius = 90.0f;
+
+	trap2.position = { 1500.0f,trap2.radius * -1 + 1};
+	trap2.newPosY = (trap2.position.y - world) * -1.0f;
+
+	trap2.edgePosition.right = trap2.position.x + trap2.radius;
+	trap2.edgePosition.left = trap2.position.x - trap2.radius;
+	trap2.edgePosition.up = trap2.position.y + trap2.radius;
+	trap2.edgePosition.down = trap2.position.y - trap2.radius;*/
+
+	const int maxTrap = 10;
+
+	Trap trap[maxTrap];
+
+	for (int i = 0; i < maxTrap; i++)
+	{
+		trap[i].radius = 90.0f;
+
+		trap[i].position = {(float)((worldEnd / maxTrap + rand() % 400 + 100) * (i + 1)),(float)(trap[i].radius * -1 + 1)}; 
+		trap[i].newPosY = (trap[i].position.y - world) * -1.0f;
+
+		trap[i].edgePosition.right = trap[i].position.x + trap[i].radius;
+		trap[i].edgePosition.left = trap[i].position.x - trap[i].radius;
+		trap[i].edgePosition.up = trap[i].position.y + trap[i].radius;
+		trap[i].edgePosition.down = trap[i].position.y - trap[i].radius;
+	}
+
 	//========================================
 	//========================================
 
@@ -135,10 +167,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//========================================
 	// その他の変数
 	//========================================
-	
-	int beside = 0;
 
-	srand((unsigned int)time(NULL));//乱数の初期化
+	
 
 	//========================================
 	//========================================
@@ -167,7 +197,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//========================================
 		// フレームの最初の処理
 		//========================================
-		beside = 0;
 
 		if (playerHitCount > 0)
 		{
@@ -213,16 +242,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//==============
 		//背景用
 		//==============
-		backPage.pos1.x += player.velocity.x;
-		backPage.pos2.x += player.velocity.x;
+		backPage.pos1.x -= player.velocity.x;
+		backPage.pos2.x -= player.velocity.x;
 
 		if (backPage.pos1.x >= 1280)
 		{
-			backPage.pos1.x -= 1280 * 2;
+			backPage.pos1.x = 1280 * 2;
 		}
 		if (backPage.pos2.x >= 1280)
 		{
-			backPage.pos2.x -= 1280 * 2;
+			backPage.pos2.x = 1280 * 2;
 		}
 		//==============
 		//==============
@@ -241,24 +270,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if (player.worldPosition.y > player.radius)
 		{
 			player.velocity.y += player.accelecion.y;
-			if ((keys[DIK_SPACE] != 0 && preKeys[DIK_SPACE] == 0) && (jumpCount == 1))
-			{
-				player.velocity.y = jumpPower.second;
-				jumpCount = 2;
-			}
+			
 		}
 		else if (player.worldPosition.y < player.radius)
 		{
 			player.worldPosition.y = player.radius;
 			player.velocity.y = 0.0f;
-			jumpCount = 0;
 		}
 		else if (player.worldPosition.y == player.radius)
 		{
-			if ((keys[DIK_SPACE] != 0 && preKeys[DIK_SPACE] == 0) && (jumpCount == 0))
+			if ((keys[DIK_SPACE] != 0 && preKeys[DIK_SPACE] == 0))
 			{
 				player.velocity.y = jumpPower.first;
-				jumpCount = 1;
 			}
 		}
 
@@ -287,18 +310,37 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		player.edgePosition.up = player.worldPosition.y + player.radius;
 		player.edgePosition.down = player.worldPosition.y - player.radius;
 
-		if (player.edgePosition.right <= trap.edgePosition.left)//boxより右にいたら
-		{
-			beside = 1;
-		}
+		//if ((player.edgePosition.right <= trap1.edgePosition.left) == 0)//boxより右にいたら
+		//{
+		//	if ((player.edgePosition.down >= trap1.edgePosition.up) == 0)//boxより上に来たら
+		//	{
+		//		if ((player.edgePosition.left >= trap1.edgePosition.right) == 0)
+		//		{
+		//			playerHitCount = 120;
+		//		}
+		//	}
+		//}
 
-		if ((player.edgePosition.down >= trap.edgePosition.up) == 0)//boxより上に来たら
+		//if ((player.edgePosition.right <= trap2.edgePosition.left) == 0)//boxより右にいたら
+		//{
+		//	if ((player.edgePosition.down >= trap2.edgePosition.up) == 0)//boxより上に来たら
+		//	{
+		//		if ((player.edgePosition.left >= trap2.edgePosition.right) == 0)
+		//		{
+		//			playerHitCount = 120;
+		//		}
+		//	}
+		//}
+		for (int i = 0; i < maxTrap; i++)
 		{
-			if ((player.edgePosition.left >= trap.edgePosition.right) == 0)
+			if ((player.edgePosition.right <= trap[i].edgePosition.left) == 0)//boxより右にいたら
 			{
-				if (beside != 1)
+				if ((player.edgePosition.down >= trap[i].edgePosition.up) == 0)//boxより上に来たら
 				{
-					playerHitCount = 120;
+					if ((player.edgePosition.left >= trap[i].edgePosition.right) == 0)
+					{
+						playerHitCount = 120;
+					}
 				}
 			}
 		}
@@ -336,15 +378,32 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			0.0f, RED, kFillModeSolid
 		);
 
-		Novice::DrawBox
+		/*Novice::DrawBox
 		(
-			(int)(trap.position.x - (trap.radius + scrollPosX)), (int)(trap.newPosY - trap.radius),
-			(int)trap.radius * 2, (int)trap.radius * 2,
+			(int)(trap1.position.x - (trap1.radius + scrollPosX)), (int)(trap1.newPosY - trap1.radius),
+			(int)trap1.radius * 2, (int)trap1.radius * 2,
 			0.0f, BLUE, kFillModeSolid
 		);
+
+		Novice::DrawBox
+		(
+			(int)(trap2.position.x - (trap2.radius + scrollPosX)), (int)(trap2.newPosY - trap2.radius),
+			(int)trap2.radius * 2, (int)trap2.radius * 2,
+			0.0f, BLUE, kFillModeSolid
+		);*/
 	
+		for (int i = 0; i < maxTrap; i++)
+		{
+			Novice::DrawBox
+			(
+				(int)(trap[i].position.x - (trap[i].radius + scrollPosX)), (int)(trap[i].newPosY - trap[i].radius),
+				(int)trap[i].radius * 2, (int)trap[i].radius * 2,
+				0.0f, BLUE, kFillModeSolid
+			);
+		}
+
 		Novice::ScreenPrintf(0, 0, "x1 %.0f, x2 %.0f",backPage.pos1.x, backPage.pos2.x);
-		Novice::ScreenPrintf(0, 20, "testGit - 1");
+		Novice::ScreenPrintf(0, 20, "%d", playerHitCount);
 		///
 		/// ↑描画処理ここまで
 		///
