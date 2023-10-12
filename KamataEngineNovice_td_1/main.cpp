@@ -298,6 +298,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		);
 	
 		Novice::ScreenPrintf(0, 0, "testGit");
+		Novice::ScreenPrintf(0, 20, "testGit - 1");
 		///
 		/// ↑描画処理ここまで
 		///
