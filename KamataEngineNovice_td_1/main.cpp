@@ -92,7 +92,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		5.0f//遅くなった時
 	};
 
-
 	int playerHitCount = 0;
 	//========================================
 	//========================================
@@ -298,7 +297,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			0.0f, BLUE, kFillModeSolid
 		);
 	
-	
+		Novice::ScreenPrintf(0, 0, "testGit");
 		///
 		/// ↑描画処理ここまで
 		///
