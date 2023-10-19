@@ -109,8 +109,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	DogSpeed dogSpeed//速さ
 	{
 		10.0f,//通常時
-		5.0f,//遅くなった時
-		13.0f//速くなった時
+		10.0f,//遅くなった時
+		10.0f//速くなった時
 	};
 
 	int playerHitCount = 0;
@@ -217,10 +217,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//====================
 	// バックグラウンド用
 	//====================
-	int titleDogGH = Novice::LoadTexture("./Resources//BackGround/TitleDog.png");
+	int titleDogGH = Novice::LoadTexture("./Resources/BackGround/TitleDog.png");
 	int gameMessageGH = Novice::LoadTexture("./Resources/BackGround/GameMassage.png");
 	int backGroundGH = Novice::LoadTexture("./Resources/BackGround/BackGround.png");
 	int gameRuleGH = Novice::LoadTexture("./Resources/BackGround/Game_Rule.png");
+	//====================
+	//====================
+
+	//====================
+	// バックグラウンド用
+	//====================
+
+	/*int blackDog = Novice::LoadTexture("./Resources/object/BlackDog.png");
+	int retDog = Novice::LoadTexture("./Resources/object/RetDog.png");
+	int whiteDog = Novice::LoadTexture("./Resources/object/WhiteDog.png");
+	int bone = Novice::LoadTexture("./Resources/object/Bone.png");*/
+	int HuntingDogGauge = Novice::LoadTexture("./Resources/object/Hunting_Dog_Gauge.png");
+	//int petOwner = Novice::LoadTexture("./Resources/object/petOwner.png");
+	int MuddyWater = Novice::LoadTexture("./Resources/object/Muddy_Water.png");
+
 	//====================
 	//====================
 	
@@ -301,9 +316,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				titleAnimationCount = maxAnimationCount;
 			}
 
-			player.worldPosition = { 100.0f,300.0f };
+			player.worldPosition = { 100.0f,player.radius };
 
 			isGoal = 0;
+
+			backPage = { 0.0f, 0.0f };
+
+			playerHitCount = 0;
+
+			gameCount = 0;
 
 			titleAnimationCount--;
 
@@ -349,11 +370,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				playerHitCount++;
 			}
 
-			if (gameCount > 0)
+			if (gameCount >= 0)
 			{
-				gameCount--;
+				gameCount++;
 			}
-			if (gameCount > 300)
+			if (gameCount > 1200)
 			{
 				scene = GAME_OVER;
 			}
@@ -377,7 +398,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				player.velocity.x = dogSpeed.fast;
 			}
 
-			/*if (keys[DIK_A] != 0 || keys[DIK_LEFT])
+			if (keys[DIK_A] != 0 || keys[DIK_LEFT])
 			{
 				player.worldPosition.x -= player.velocity.x;
 			}
@@ -388,9 +409,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			else
 			{
 				player.velocity.x = 0;
-			}*/
+			}
 
-			player.worldPosition.x += player.velocity.x;
+			/*player.worldPosition.x += player.velocity.x;*/
 
 			//==============
 			//背景用
@@ -611,6 +632,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius), (int)player.newPosY,
 				(int)player.radius * 2, (int)player.radius * 2, 0.0f, RED, kFillModeSolid
 			);
+
+			Novice::DrawLine
+			(
+				(int)(player.edgePosition.left - backPage.pos1.x), (int)((player.edgePosition.up - 500.0f) * -1),
+				(int)(player.edgePosition.left - backPage.pos1.x), 720,GREEN
+			);
+			Novice::DrawLine
+			(
+				(int)(player.edgePosition.right - backPage.pos1.x), (int)((player.edgePosition.up - 500.0f) * -1),
+				(int)(player.edgePosition.right - backPage.pos1.x), 720, GREEN
+			);
 			//========================================
 			//========================================
 
@@ -621,19 +653,30 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			{
 				if ((trap[i].position.x - (trap[i].radius + scrollPosX)) >= (goal.position.x - (goal.radius + scrollPosX)) == 0)
 				{
-					Novice::DrawBox
-					(
-						(int)(trap[i].position.x - (trap[i].radius + scrollPosX)), (int)(trap[i].newPosY - trap[i].radius),
-						(int)trap[i].radius * 2, (int)trap[i].radius * 2,
-						0.0f, BLUE, kFillModeSolid
-					);
+					if (trap[i].trapNum == 0)
+					{
+						Novice::DrawQuad((int)(trap[i].edgePosition.left - scrollPosX), (int)((trap[i].edgePosition.up - 500.0f) * -1),
+						(int)(trap[i].edgePosition.right - scrollPosX), (int)((trap[i].edgePosition.up - 500.0f) * -1),
+						(int)(trap[i].edgePosition.left - scrollPosX), (int)((trap[i].edgePosition.down - 500.0f) * -1),
+						(int)(trap[i].edgePosition.right - scrollPosX), (int)((trap[i].edgePosition.down - 500.0f) * -1),
+						1, 1, 90, 90, HuntingDogGauge, WHITE
+						);
+					}
+					else {
+						Novice::DrawQuad((int)(trap[i].edgePosition.left - scrollPosX), (int)((trap[i].edgePosition.up - 500.0f) * -1),
+						(int)(trap[i].edgePosition.right - scrollPosX), (int)((trap[i].edgePosition.up - 500.0f) * -1),
+						(int)(trap[i].edgePosition.left - scrollPosX), (int)((trap[i].edgePosition.down - 500.0f) * -1),
+						(int)(trap[i].edgePosition.right - scrollPosX), (int)((trap[i].edgePosition.down - 500.0f) * -1),
+						1, 1, 90, 90, MuddyWater, WHITE
+						);
+					}
 				}
 			}
 			//========================================
 			//========================================
 
 			//========================================
-			// ゴール
+			// アイテム
 			//========================================
 			for (int i = 0; i < maxItem; i++)
 			{
@@ -677,6 +720,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			{
 				Novice::ScreenPrintf(0, 80, "goal");
 			}
+
+			Novice::ScreenPrintf(0, 80, "%d",gameCount);
 
 			break;
 
