@@ -59,16 +59,9 @@ typedef struct JumpPower
 	float high;
 }JumpPower;
 
-typedef struct Scene
-{
-	int title;
-	int game;
-	int score;
-}Score;
-
 const int world = 500;
 
-const int worldEnd = 1280*4;
+const int worldEnd = 1280*7;
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -80,7 +73,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
 
-	srand((unsigned int)time(NULL));//乱数の初期化
 
 	//========================================
 	//プレイヤーに関する変数
@@ -173,6 +165,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//========================================
 	int gameBackGround = Novice::LoadTexture("./resources/BackGround/BackGround.png");
 
+	int white1x1 = Novice::LoadTexture("./NoviceResources/white1x1.png");
+
 
 	//========================================
 	//========================================
@@ -231,7 +225,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//==============
 		//背景用
 		//==============
-		if (player.worldPosition.x >= 640 && player.worldPosition.x <= 4480)
+		if (player.worldPosition.x >= 640 && player.worldPosition.x <= worldEnd + 640)
 		{
 			backPage.pos1.x = player.worldPosition.x - 640;
 		}
@@ -347,16 +341,41 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		(0-(int)backPage.pos1.x+1280*3, (int)backPage.pos1.y, gameBackGround, 1, 1, 0.0f, WHITE);
 		(0-(int)backPage.pos1.x+1280*4, (int)backPage.pos1.y, gameBackGround, 1, 1, 0.0f, WHITE);*/
 
+		//========================================
+		// 背景
+		//========================================
 		Novice::DrawSprite(0 - (int)backPage.pos1.x, (int)backPage.pos1.y, gameBackGround, 1, 1, 0.0f, WHITE);
 		Novice::DrawSprite(0 - (int)backPage.pos1.x + 1280, (int)backPage.pos1.y, gameBackGround, 1, 1, 0.0f, WHITE);
 		Novice::DrawSprite(0 - (int)backPage.pos1.x + 1280 * 2, (int)backPage.pos1.y, gameBackGround, 1, 1, 0.0f, WHITE);
 		Novice::DrawSprite(0 - (int)backPage.pos1.x + 1280 * 3, (int)backPage.pos1.y, gameBackGround, 1, 1, 0.0f, WHITE);
 		Novice::DrawSprite(0 - (int)backPage.pos1.x + 1280 * 4, (int)backPage.pos1.y, gameBackGround, 1, 1, 0.0f, WHITE);
-
-
+		Novice::DrawSprite(0 - (int)backPage.pos1.x + 1280 * 5, (int)backPage.pos1.y, gameBackGround, 1, 1, 0.0f, WHITE);
+		Novice::DrawSprite(0 - (int)backPage.pos1.x + 1280 * 6, (int)backPage.pos1.y, gameBackGround, 1, 1, 0.0f, WHITE);
+		Novice::DrawSprite(0 - (int)backPage.pos1.x + 1280 * 7, (int)backPage.pos1.y, gameBackGround, 1, 1, 0.0f, WHITE);
+		//========================================
+		//========================================
+		
+		//========================================
 		//自機
-		Novice::DrawEllipse((int)player.worldPosition.x - (int)backPage.pos1.x, (int)player.newPosY, 50, 50, 0.0f, GREEN, kFillModeSolid);
+		//========================================
+		/*Novice::DrawEllipse((int)player.worldPosition.x - (int)backPage.pos1.x, (int)player.newPosY, 50, 50, 0.0f, GREEN, kFillModeSolid);*/
 
+		
+
+		Novice::DrawQuad
+		(
+			(int)player.edgePosition.left - (int)backPage.pos1.x, (int)((player.edgePosition.up - world) * -1.0f), (int)player.edgePosition.right - (int)backPage.pos1.x, (int)((player.edgePosition.up - world) * -1.0f),
+			(int)player.edgePosition.left - (int)backPage.pos1.x, (int)((player.edgePosition.down - world) * -1.0f), (int)player.edgePosition.right - (int)backPage.pos1.x, (int)((player.edgePosition.down - world) * -1.0f),
+			1, 1, 64, 64, white1x1, GREEN
+		);
+
+		Novice::DrawBox
+		(
+			(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius), (int)player.newPosY,
+			(int)player.radius * 2, (int)player.radius * 2, 0.0f, RED, kFillModeSolid
+		);
+		//========================================
+		//========================================
 
 
 		/*Novice::DrawBox
@@ -407,6 +426,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			Novice::ScreenPrintf(0, 60, "high");
 		}
 
+		Novice::ScreenPrintf(0, 0, "(%d)", (int)player.worldPosition.x);
 		Novice::ScreenPrintf(0, 0, "(%d)", (int)player.worldPosition.x);
 		///
 		/// ↑描画処理ここまで
