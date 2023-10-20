@@ -68,6 +68,13 @@ typedef struct JumpPower
 	float high;
 }JumpPower;
 
+typedef struct DogColor
+{
+	int white;
+	int black;
+	int red;
+}dogColor;
+
 const int world = 500;
 
 const int worldEnd = 1280 * 8;
@@ -117,6 +124,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	int dogColor = 0;
 	int dogColorLottery = 0;
+
+	DogColor dogColorReference//犬の色用の関数
+	{
+		1,
+		2,
+		3,
+	};
+
+	/*const int dogMaxAnimationCount = 120;
+	int dogAnimationCount = 120;*/
 	//========================================
 	//========================================
 
@@ -289,9 +306,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//ゲームに進む
 			if (keys[DIK_RETURN] != 0 && preKeys[DIK_RETURN] == 0)
 			{
-				//======================
-				// ゲーム内の初期化
-				//======================
 
 				//====================
 				// 初期化処理
@@ -336,24 +350,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				gameCount = 0;
 
-				titleAnimationCount--;
-
 				dogColorLottery = rand() % 100;
 
-				//====================
-				//====================
-
-				if (dogColorLottery >= 94)//赤柴
+				if (dogColorLottery >= 94)//白
 				{
-					dogColor = 3;
+					dogColor = dogColorReference.white;
 				}
-				else if (dogColorLottery < 50)
+				else if (dogColorLottery < 50)//黒
 				{
-					dogColor = 1;
+					dogColor = dogColorReference.black;
 				}
-				else
+				else//赤
 				{
-					dogColor = 2;
+					dogColor = dogColorReference.red;
 				}
 
 				//======================
@@ -363,6 +372,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				titleAnimationCount = maxAnimationCount;
 			}
+
+			titleAnimationCount--;
 
 			if (titleAnimationCount <= 0)
 			{
@@ -425,11 +436,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			{
 				player.velocity.x = dogSpeed.normal;
 			}
-			else if (playerHitCount > 0)
+			else if (playerHitCount < 0)
 			{
 				player.velocity.x = dogSpeed.slow;
 			}
-			else if (playerHitCount < 0)
+			else if (playerHitCount > 0)
 			{
 				player.velocity.x = dogSpeed.fast;
 			}
@@ -542,7 +553,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						}
 						else
 						{
-							playerHitCount = 120;
+							playerHitCount = -120;
 						}
 					}
 				}
@@ -554,7 +565,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				{
 					if (player.edgePosition.down <= item[i].edgePosition.up)//boxより下に来たら
 					{
-						playerHitCount = -120;
+						playerHitCount = 120;
 					}
 				}
 			}
@@ -568,6 +579,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			{
 				scene = GAME_CLEAR;
 			}
+			//========================================
+			//========================================
+
+			//========================================
+			// 犬のアニメーション用の処理
+			//========================================
+
+
+
 			//========================================
 			//========================================
 
