@@ -136,12 +136,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	const int maxTrap = 10;
 
 	Trap trap[maxTrap]{};
-
-	for (int i = 0; i < maxTrap; i++)
-	{
-		trap[i].radius = 90.0f;
-	}
-
+	
 	//========================================
 	//========================================
 
@@ -315,7 +310,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				{
 					if (i > 0)
 					{
-						trap[i].trapNum = rand() % 10;
+						trap[i].trapNum = rand() % 2;
 					}
 					else
 					{
@@ -325,6 +320,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					if (trap[i].trapNum != 0)
 					{
 						trap[i].trapNum = 1;
+						trap[i].radius = 90;
+					}
+					else
+					{
+						trap[i].radius = 60;
 					}
 
 					if (trap[i].trapNum == 0)
@@ -333,7 +333,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					}
 					else
 					{
-						trap[i].position = { (float)((worldEnd / maxTrap + rand() % 150 + 90) * (i + 1)),(float)(trap[i].radius * -1 + trap[i].radius / 2) };
+						trap[i].position = { (float)((worldEnd / maxTrap + rand() % 150 + 90) * (i + 1)),(float)(trap[i].radius * -1) };
 					}
 					trap[i].newPosY = (trap[i].position.y - world) * -1.0f;
 
