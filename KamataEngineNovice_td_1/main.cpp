@@ -242,16 +242,26 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int HuntingDogGauge = Novice::LoadTexture("./Resources/object/Hunting_Dog_Gauge.png");
 	int petOwner = Novice::LoadTexture("./Resources/object/petOwner.png");
 	int MuddyWater = Novice::LoadTexture("./Resources/object/Muddy_Water.png");
+	int Taroumaru = Novice::LoadTexture("./Resources/object/Taroumaru.png");
+	int mudAnimetionGH = Novice::LoadTexture("./Resources/object/Sizuku-animation.png");
 
 	//====================
 	//====================
 
-	//三秒初期化
+	//====================
+	//たろうまる
 	int Time1 = 120;
 
+	//3秒初期化
+	int TaroumaruX = 1280;
+
+	//5秒初期化
+	int Wait = 300;
+
+	int TarouColor = 0xFFFFFFFF;
 
 
-
+	//====================
 
 	//========================================
 	//========================================
@@ -426,47 +436,59 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//========================================
 			// プレイヤーの移動に関する処理
 			//========================================
-
-			if (Time1 > 0)
+			///=============あああああああああああああああああああ===============/////
+			if (TaroumaruX > 1025)
 			{
-				player.velocity.x = dogSpeed.slow;
-				Time1--;
+				Wait--;
+				TaroumaruX -= 2;
+			}
+			if (TaroumaruX < 1025)
+			{
+				TaroumaruX = 1025;
 			}
 
-			if (Time1 < 0)
+			if (TaroumaruX == 1025)
 			{
-				Time1 = 0;
+				TarouColor--;
 			}
 
-			player.worldPosition.x += player.velocity.x;
-
-			if (playerHitCount == 0)//移動速度低下時の判定の仕方を変更
+			if (TarouColor < 0xFFFFFF00)
 			{
-				player.velocity.x = dogSpeed.normal;
-			}
-			else if (playerHitCount < 0)
-			{
-				player.velocity.x = dogSpeed.slow;
-			}
-			else if (playerHitCount > 0)
-			{
-				player.velocity.x = dogSpeed.fast;
+				TarouColor = 0xFFFFFF00;
 			}
 
-			/*if (keys[DIK_A] != 0 || keys[DIK_LEFT])
+			Novice::ScreenPrintf(0, 100, "Wait %d", Wait);
+
+			if (Wait == 172)
 			{
-				player.worldPosition.x -= player.velocity.x;
-			}
-			else if (keys[DIK_D] != 0 || keys[DIK_RIGHT])
-			{
+				if (Time1 > 0)
+				{
+					player.velocity.x = dogSpeed.slow;
+					Time1--;
+				}
+
+				if (Time1 < 0)
+				{
+					Time1 = 0;
+				}
+
 				player.worldPosition.x += player.velocity.x;
-			}
-			else
-			{
-				player.velocity.x = 0;
-			}*/
 
-			/*player.worldPosition.x += player.velocity.x;*/
+				if (playerHitCount == 0)//移動速度低下時の判定の仕方を変更
+				{
+					player.velocity.x = dogSpeed.normal;
+				}
+				else if (playerHitCount < 0)
+				{
+					player.velocity.x = dogSpeed.slow;
+				}
+				else if (playerHitCount > 0)
+				{
+					player.velocity.x = dogSpeed.fast;
+				}
+			}
+
+			///=============あああああああああああああああああああ==========
 
 			//==============
 			//背景用
@@ -739,6 +761,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//========================================
 			// 
 			//========================================
+
+			///=====たろうまるの名前を呼ぶうううううううううううううううううううううううううううう=====///
+			Novice::DrawSprite(TaroumaruX, 0, Taroumaru, 1, 1, 0.0f, TarouColor);
+			///=====たろうまるの名前を呼ぶうううううううううううううううううううううううううううう=====///
 
 			//========================================
 			//自機
