@@ -22,7 +22,7 @@ typedef struct Player//プレイヤーの変数
 	float newPosY;
 	Vector2 velocity;
 	Vector2 accelecion;
-	float radius;
+	Vector2 radius;
 	EdgePosition edgePosition;
 }Player;
 
@@ -89,11 +89,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//========================================
 	Player player
 	{
-		{100.0f,300.0f},
+		{50.0f,300.0f},
 		0.0f,
 		{10.0f,0.0f},
 		{0.0f,-0.8f},
-		40.0f,
+		{80.0f, 60.0f},
 	};
 
 	JumpPower jumpPower =
@@ -135,7 +135,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//========================================
 	const int maxTrap = 10;
 
-	Trap trap[maxTrap];
+	Trap trap[maxTrap]{};
+
+	for (int i = 0; i < maxTrap; i++)
+	{
+		trap[i].radius = 90.0f;
+	}
 
 	//========================================
 	//========================================
@@ -155,7 +160,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//========================================
 	// ゴール用の変数
 	//========================================
-	Goal goal;
+	Goal goal{};
 	goal.radius = 128;
 
 	goal.position = { 11000, goal.radius };
@@ -170,7 +175,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//========================================
 	const int maxItem = 3;
 
-	Item item[maxItem];
+	Item item[maxItem]{};
 	for (int i = 0; i < maxItem; i++)
 	{
 		item[i].radius = 20;
@@ -232,7 +237,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//====================
 
 	//====================
-	// その他用
+	// バックグラウンド用
 	//====================
 
 	int blackDog = Novice::LoadTexture("./Resources/object/BlackDog.png");
@@ -245,9 +250,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//====================
 	//====================
-	
+
 	//三秒初期化
 	int Time1 = 120;
+
+
+
+
 
 	//========================================
 	//========================================
@@ -263,7 +272,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓更新処理ここから
 		///
-		
+
 		//========================================
 		// 背景の確認に関する処理
 		//========================================
@@ -289,7 +298,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 		//========================================
 		//========================================
-		
+
 		switch (scene)
 		{
 		case TITLE:
@@ -306,21 +315,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				{
 					if (i > 0)
 					{
-						trap[i].trapNum = rand() % 2;
+						trap[i].trapNum = rand() % 10;
 					}
 					else
 					{
 						trap[i].trapNum = 1;
 					}
-					
+
 					if (trap[i].trapNum != 0)
 					{
 						trap[i].trapNum = 1;
-						trap[i].radius = 90;
-					}
-					else
-					{
-						trap[i].radius = 60;
 					}
 
 					if (trap[i].trapNum == 0)
@@ -329,7 +333,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					}
 					else
 					{
-						trap[i].position = { (float)((worldEnd / maxTrap + rand() % 150 + 90) * (i + 1)),(float)(trap[i].radius * -1) };
+						trap[i].position = { (float)((worldEnd / maxTrap + rand() % 150 + 90) * (i + 1)),(float)(trap[i].radius * -1 + trap[i].radius / 2) };
 					}
 					trap[i].newPosY = (trap[i].position.y - world) * -1.0f;
 
@@ -339,7 +343,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					trap[i].edgePosition.down = trap[i].position.y - trap[i].radius;
 				}
 
-				player.worldPosition = { 100.0f,player.radius };
+				player.worldPosition = { 100.0f,player.radius.y };
 
 				backPage = { 0.0f, 0.0f };
 
@@ -376,7 +380,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			{
 				titleAnimationCount = maxAnimationCount;
 			}
-
 			break;
 
 
@@ -392,15 +395,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					ghCount = 0;
 				}
 			}
-
-
-
 			break;
 
-
 		case GAME:
-
-
 			//========================================
 			// フレームの最初の処理
 			//========================================
@@ -429,6 +426,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//========================================
 			// プレイヤーの移動に関する処理
 			//========================================
+
 			if (Time1 > 0)
 			{
 				player.velocity.x = dogSpeed.slow;
@@ -454,6 +452,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			{
 				player.velocity.x = dogSpeed.fast;
 			}
+
+			/*if (keys[DIK_A] != 0 || keys[DIK_LEFT])
+			{
+				player.worldPosition.x -= player.velocity.x;
+			}
+			else if (keys[DIK_D] != 0 || keys[DIK_RIGHT])
+			{
+				player.worldPosition.x += player.velocity.x;
+			}
+			else
+			{
+				player.velocity.x = 0;
+			}*/
+
+			/*player.worldPosition.x += player.velocity.x;*/
+
 			//==============
 			//背景用
 			//==============
@@ -475,18 +489,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 
 
-			if (player.worldPosition.y > player.radius)
+			if (player.worldPosition.y > player.radius.y)
 			{
 				player.velocity.y += player.accelecion.y;
 
 			}
-			else if (player.worldPosition.y < player.radius)
+			else if (player.worldPosition.y < player.radius.y)
 			{
-				player.worldPosition.y = player.radius;
+				player.worldPosition.y = player.radius.y;
 				player.velocity.y = 0.0f;
 				jumpBottanCount = 0;
 			}
-			else if (player.worldPosition.y == player.radius)
+			else if (player.worldPosition.y == player.radius.y)
 			{
 				if ((keys[DIK_SPACE] != 0 && preKeys[DIK_SPACE] != 0))//スペースキーを押している間
 				{
@@ -509,13 +523,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			player.worldPosition.y += player.velocity.y;
 
 
-			if (player.worldPosition.x < player.radius)
+			if (player.worldPosition.x < player.radius.x)
 			{
-				player.worldPosition.x = player.radius;
+				player.worldPosition.x = player.radius.x;
 			}
-			if (player.worldPosition.x > worldEnd + 1280 - player.radius)
+			if (player.worldPosition.x > worldEnd + 1280 - player.radius.x)
 			{
-				player.worldPosition.x = worldEnd + 1280 - player.radius;
+				player.worldPosition.x = worldEnd + 1280 - player.radius.x;
 			}
 
 
@@ -526,10 +540,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//========================================
 			// 当たり判定の計算
 			//========================================
-			player.edgePosition.right = player.worldPosition.x + player.radius;
-			player.edgePosition.left = player.worldPosition.x - player.radius;
-			player.edgePosition.up = player.worldPosition.y + player.radius;
-			player.edgePosition.down = player.worldPosition.y - player.radius;
+			player.edgePosition.right = player.worldPosition.x + player.radius.x;
+			player.edgePosition.left = player.worldPosition.x - player.radius.x;
+			player.edgePosition.up = player.worldPosition.y + player.radius.y;
+			player.edgePosition.down = player.worldPosition.y - player.radius.y;
 
 
 			for (int i = 0; i < maxTrap; i++)//トラップ用当たり判定
@@ -586,7 +600,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//========================================
 			//========================================
 
-			player.newPosY = (player.worldPosition.y - (world - player.radius)) * -1.0f;
+			player.newPosY = (player.worldPosition.y - (world - player.radius.y)) * -1.0f;
 
 
 			break;
@@ -676,93 +690,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//========================================
 
 			//========================================
-			//自機
-			//========================================
-			
-			if (dogColor == white)
-			{
-				if (dogAnimationCount >= dogMaxAnimationCount / 2 && dogAnimationCount <= dogMaxAnimationCount)
-				{
-					Novice::DrawSpriteRect
-					(
-						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius), (int)player.newPosY + 18,
-						0, 0, 176, 128, whiteDog, static_cast<float>(1) / 2, 1, 0.0f, WHITE
-					);
-				}
-				if (dogAnimationCount >= 0 && dogAnimationCount <= dogMaxAnimationCount / 2)
-				{
-					Novice::DrawSpriteRect
-					(
-						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius), (int)player.newPosY + 18,
-						176, 0, 352, 128, whiteDog, static_cast<float>(2) / 2, 1, 0.0f, WHITE
-					);
-				}
-			}
-
-			if (dogColor == black)
-			{
-				if (dogAnimationCount >= dogMaxAnimationCount / 2 && dogAnimationCount <= dogMaxAnimationCount)
-				{
-					Novice::DrawSpriteRect
-					(
-						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius), (int)player.newPosY + 18,
-						0, 0, 176, 128, blackDog, static_cast<float>(1) / 2, 1, 0.0f, WHITE
-					);
-				}
-				if (dogAnimationCount >= 0 && dogAnimationCount <= dogMaxAnimationCount / 2)
-				{
-					Novice::DrawSpriteRect
-					(
-						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius), (int)player.newPosY + 18, 
-						176, 0, 352, 128, blackDog, static_cast<float>(2) / 2, 1, 0.0f, WHITE
-					);
-				}
-			}
-
-			if (dogColor == red)
-			{
-				if (dogAnimationCount >= dogMaxAnimationCount / 2 && dogAnimationCount <= dogMaxAnimationCount)
-				{
-					Novice::DrawSpriteRect
-					(
-						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius), (int)player.newPosY + 18,
-						0, 0, 176, 128, redDog, static_cast<float>(1) / 2, 1, 0.0f, WHITE
-					);
-				}
-				if (dogAnimationCount >= 0 && dogAnimationCount <= dogMaxAnimationCount / 2)
-				{
-					Novice::DrawSpriteRect
-					(
-						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius), (int)player.newPosY + 18,
-						176, 0, 352, 128, redDog, static_cast<float>(2) / 2, static_cast<float>(2) / 2, 0.0f, WHITE
-					);
-				}
-			}
-
-			Novice::DrawLine
-			(
-				(int)(player.edgePosition.left - backPage.pos1.x), (int)((player.edgePosition.up - 500.0f) * -1),
-				(int)(player.edgePosition.left - backPage.pos1.x), (int)((player.edgePosition.down - 500.0f) * -1),GREEN
-			);
-			Novice::DrawLine
-			(
-				(int)(player.edgePosition.right - backPage.pos1.x), (int)((player.edgePosition.up - 500.0f) * -1),
-				(int)(player.edgePosition.right - backPage.pos1.x), (int)((player.edgePosition.down - 500.0f) * -1), GREEN
-			);
-			Novice::DrawLine
-			(
-				(int)(player.edgePosition.left - backPage.pos1.x), (int)((player.edgePosition.up - 500.0f) * -1),
-				(int)(player.edgePosition.right - backPage.pos1.x), (int)((player.edgePosition.up - 500.0f) * -1),GREEN
-			);
-			Novice::DrawLine
-			(
-				(int)(player.edgePosition.left- backPage.pos1.x), (int)((player.edgePosition.down - 500.0f) * -1),
-				(int)(player.edgePosition.right - backPage.pos1.x), (int)((player.edgePosition.down - 500.0f) * -1), GREEN
-			);
-			//========================================
-			//========================================
-
-			//========================================
 			// アイテム
 			//========================================
 			for (int i = 0; i < maxItem; i++)
@@ -800,17 +727,110 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					else {
 						Novice::DrawQuad
 						(
-							(int)(trap[i].edgePosition.left - scrollPosX), (int)((trap[i].edgePosition.up - 500.0f + 45.0f) * -1),
-							(int)(trap[i].edgePosition.right - scrollPosX), (int)((trap[i].edgePosition.up - 500.0f + 45.0f) * -1),
-							(int)(trap[i].edgePosition.left - scrollPosX), (int)((trap[i].edgePosition.down - 500.0f + 45.0f) * -1),
-							(int)(trap[i].edgePosition.right - scrollPosX), (int)((trap[i].edgePosition.down - 500.0f + 45.0f) * -1),
+							(int)(trap[i].edgePosition.left - scrollPosX), (int)((trap[i].edgePosition.up - 500.0f) * -1),
+							(int)(trap[i].edgePosition.right - scrollPosX), (int)((trap[i].edgePosition.up - 500.0f) * -1),
+							(int)(trap[i].edgePosition.left - scrollPosX), (int)((trap[i].edgePosition.down - 500.0f) * -1),
+							(int)(trap[i].edgePosition.right - scrollPosX), (int)((trap[i].edgePosition.down - 500.0f) * -1),
 							1, 1, 90, 90, MuddyWater, WHITE
 						);
 					}
 				}
 			}
 			//========================================
+			// 
 			//========================================
+
+			//========================================
+			//自機
+			//========================================
+
+			if (dogColor == white)
+			{
+				if (dogAnimationCount >= dogMaxAnimationCount / 2 && dogAnimationCount <= dogMaxAnimationCount)
+				{
+					Novice::DrawSpriteRect
+					(
+						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius.x), (int)player.newPosY,
+						0, 0, 176, 128, whiteDog, static_cast<float>(1) / 2, 1, 0.0f, 0xFFFFFFFF
+					);
+					//Novice::DrawSpriteRect(0, 300, 0, 0, 176, 128, whiteDog, static_cast<float>(1) / 2, 1, 0.0f, WHITE);
+				}
+				if (dogAnimationCount >= 0 && dogAnimationCount <= dogMaxAnimationCount / 2)
+				{
+					Novice::DrawSpriteRect
+					(
+						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius.x), (int)player.newPosY,
+						176, 0, 352, 128, whiteDog, static_cast<float>(2) / 2, 1, 0.0f, 0xFFFFFFFF
+					);
+					//Novice::DrawSpriteRect(0, 300, 176, 0, 356, 128, whiteDog, static_cast<float>(2) / 2, 1, 0.0f, WHITE);
+				}
+			}
+
+			if (dogColor == black)
+			{
+				if (dogAnimationCount >= dogMaxAnimationCount / 2 && dogAnimationCount <= dogMaxAnimationCount)
+				{
+					Novice::DrawSpriteRect
+					(
+						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius.x + 20), (int)player.newPosY - 5,
+						0, 0, 176, 128, blackDog, static_cast<float>(1) / 2, 1, 0.0f, WHITE
+					);
+				}
+				if (dogAnimationCount >= 0 && dogAnimationCount <= dogMaxAnimationCount / 2)
+				{
+					Novice::DrawSpriteRect
+					(
+						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius.x + 20), (int)player.newPosY - 5,
+						176, 0, 352, 128, blackDog, static_cast<float>(2) / 2, 1, 0.0f, WHITE
+					);
+				}
+
+			}
+
+			if (dogColor == red)
+			{
+				if (dogAnimationCount >= dogMaxAnimationCount / 2 && dogAnimationCount <= dogMaxAnimationCount)
+				{
+					Novice::DrawSpriteRect
+					(
+						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius.x + 20), (int)player.newPosY - 5,
+						0, 0, 176, 128, redDog, static_cast<float>(1) / 2, 1, 0.0f, WHITE
+					);
+				}
+				if (dogAnimationCount >= 0 && dogAnimationCount <= dogMaxAnimationCount / 2)
+				{
+					Novice::DrawSpriteRect
+					(
+						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius.x + 20), (int)player.newPosY - 5,
+						176, 0, 352, 128, redDog, static_cast<float>(2) / 2, static_cast<float>(2) / 2, 0.0f, WHITE
+					);
+				}
+			}
+
+			Novice::DrawLine
+			(
+				(int)(player.edgePosition.left - backPage.pos1.x), (int)((player.edgePosition.up - 500.0f) * -1),
+				(int)(player.edgePosition.left - backPage.pos1.x), (int)((player.edgePosition.down - 500.0f) * -1), GREEN
+			);
+			Novice::DrawLine
+			(
+				(int)(player.edgePosition.right - backPage.pos1.x), (int)((player.edgePosition.up - 500.0f) * -1),
+				(int)(player.edgePosition.right - backPage.pos1.x), (int)((player.edgePosition.down - 500.0f) * -1), GREEN
+			);
+			Novice::DrawLine
+			(
+				(int)(player.edgePosition.left - backPage.pos1.x), (int)((player.edgePosition.up - 500.0f) * -1),
+				(int)(player.edgePosition.right - backPage.pos1.x), (int)((player.edgePosition.up - 500.0f) * -1), GREEN
+			);
+			Novice::DrawLine
+			(
+				(int)(player.edgePosition.left - backPage.pos1.x), (int)((player.edgePosition.down - 500.0f) * -1),
+				(int)(player.edgePosition.right - backPage.pos1.x), (int)((player.edgePosition.down - 500.0f) * -1), GREEN
+			);
+			//========================================
+			//========================================
+
+
 
 			//========================================
 			// ゴール
@@ -818,7 +838,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			Novice::DrawSprite
 			(
 				(int)(goal.position.x - (goal.radius + scrollPosX)), (int)(goal.newPosY - goal.radius),
-				petOwner,2.0f,2.0f,0.0f,WHITE
+				petOwner, 2.0f, 2.0f, 0.0f, WHITE
 			);
 			//========================================
 			//========================================
@@ -838,7 +858,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			Novice::ScreenPrintf(30, 60, "%d", jumpBottanCount);
 
-			Novice::ScreenPrintf(0, 80, "%d",gameCount);
+			Novice::ScreenPrintf(0, 80, "%d", gameCount);
 
 			break;
 
