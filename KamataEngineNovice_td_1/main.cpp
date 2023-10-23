@@ -137,11 +137,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	Trap trap[maxTrap];
 
-	for (int i = 0; i < maxTrap; i++)
-	{
-		trap[i].radius = 90.0f;
-	}
-
 	//========================================
 	//========================================
 
@@ -237,7 +232,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//====================
 
 	//====================
-	// バックグラウンド用
+	// その他用
 	//====================
 
 	int blackDog = Novice::LoadTexture("./Resources/object/BlackDog.png");
@@ -307,7 +302,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				{
 					if (i > 0)
 					{
-						trap[i].trapNum = rand() % 10;
+						trap[i].trapNum = rand() % 2;
 					}
 					else
 					{
@@ -317,6 +312,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					if (trap[i].trapNum != 0)
 					{
 						trap[i].trapNum = 1;
+						trap[i].radius = 90;
+					}
+					else
+					{
+						trap[i].radius = 60;
 					}
 
 					if (trap[i].trapNum == 0)
@@ -687,7 +687,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				{
 					Novice::DrawSpriteRect
 					(
-						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius), (int)player.newPosY + 25,
+						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius), (int)player.newPosY + 18,
 						0, 0, 96, 64, whiteDog, static_cast<float>(1) / 2, 1, 0.0f, WHITE
 					);
 				}
@@ -695,7 +695,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				{
 					Novice::DrawSpriteRect
 					(
-						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius), (int)player.newPosY + 25,
+						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius), (int)player.newPosY + 18,
 						96, 0, 96, 64, whiteDog, static_cast<float>(1) / 2, 1, 0.0f, WHITE
 					);
 				}
@@ -707,7 +707,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				{
 					Novice::DrawSpriteRect
 					(
-						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius), (int)player.newPosY + 25,
+						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius), (int)player.newPosY + 18,
 						0, 0, 96, 64, blackDog, static_cast<float>(1) / 2, 1, 0.0f, WHITE
 					);
 				}
@@ -715,7 +715,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				{
 					Novice::DrawSpriteRect
 					(
-						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius), (int)player.newPosY + 25, 
+						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius), (int)player.newPosY + 18, 
 						96, 0, 96, 64, blackDog, static_cast<float>(1) / 2, 1, 0.0f, WHITE
 					);
 				}
@@ -727,7 +727,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				{
 					Novice::DrawSpriteRect
 					(
-						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius), (int)player.newPosY + 25,
+						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius), (int)player.newPosY + 18,
 						0, 0, 96, 64, redDog, static_cast<float>(1) / 2, 1, 0.0f, WHITE
 					);
 				}
@@ -735,7 +735,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				{
 					Novice::DrawSpriteRect
 					(
-						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius), (int)player.newPosY + 25,
+						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius), (int)player.newPosY + 18,
 						96, 0, 96, 64, redDog, static_cast<float>(1) / 2, 1, 0.0f, WHITE
 					);
 				}
