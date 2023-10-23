@@ -727,10 +727,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					else {
 						Novice::DrawQuad
 						(
-							(int)(trap[i].edgePosition.left - scrollPosX), (int)((trap[i].edgePosition.up - 500.0f) * -1),
-							(int)(trap[i].edgePosition.right - scrollPosX), (int)((trap[i].edgePosition.up - 500.0f) * -1),
-							(int)(trap[i].edgePosition.left - scrollPosX), (int)((trap[i].edgePosition.down - 500.0f) * -1),
-							(int)(trap[i].edgePosition.right - scrollPosX), (int)((trap[i].edgePosition.down - 500.0f) * -1),
+							(int)(trap[i].edgePosition.left - scrollPosX), (int)((trap[i].edgePosition.up - 500.0f + 45.0f) * -1),
+							(int)(trap[i].edgePosition.right - scrollPosX), (int)((trap[i].edgePosition.up - 500.0f + 45.0f) * -1),
+							(int)(trap[i].edgePosition.left - scrollPosX), (int)((trap[i].edgePosition.down - 500.0f + 45.0f) * -1),
+							(int)(trap[i].edgePosition.right - scrollPosX), (int)((trap[i].edgePosition.down - 500.0f + 45.0f) * -1),
 							1, 1, 90, 90, MuddyWater, WHITE
 						);
 					}
