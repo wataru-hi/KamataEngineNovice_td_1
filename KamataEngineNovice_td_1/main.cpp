@@ -136,6 +136,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	const int maxTrap = 10;
 
 	Trap trap[maxTrap]{};
+
+	int mudAnimetionCount = 0;
+	const int maxMudAnimetionCount = 120;
+
+	int isMudAnimetion = 0;
 	
 	//========================================
 	//========================================
@@ -430,6 +435,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				scene = GAME_OVER;
 			}
 
+			isMudAnimetion = 0;
+
 			//========================================
 			//========================================
 
@@ -581,6 +588,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						else
 						{
 							playerHitCount = -120;
+							isMudAnimetion = 1;
 						}
 					}
 				}
@@ -595,6 +603,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						playerHitCount = 120;
 					}
 				}
+			}
+			//========================================
+			//========================================
+
+			//========================================
+			// 泥のアニメーチョン
+			//========================================
+			if (isMudAnimetion == 1)
+			{
+				mudAnimetionCount += 1;
+			}
+			if (mudAnimetionCount > maxMudAnimetionCount)
+			{
+				mudAnimetionCount = 0;
 			}
 			//========================================
 			//========================================
@@ -759,7 +781,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 			}
 			//========================================
-			// 
+			//========================================
+
+			//========================================
+			// 泥のアニメーション描画
+			//========================================
+
+			if (isMudAnimetion == 1)
+			{
+				Novice::DrawSpriteRect
+				(
+					(int)(player.edgePosition.right - backPage.pos1.x  - 30), (int)((player.edgePosition.down - 500.0f) * -1) - 25,
+					50, 0, 25, 25, mudAnimetionGH, static_cast<float>(1) / 3, 1, 0.0f, WHITE
+				);
+			}
+			//========================================
 			//========================================
 
 			///=====たろうまるの名前を呼ぶうううううううううううううううううううううううううううう=====///
@@ -776,7 +812,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				{
 					Novice::DrawSpriteRect
 					(
-						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius.x), (int)player.newPosY,
+						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius.x + 20), (int)player.newPosY - 5,
 						0, 0, 176, 128, whiteDog, static_cast<float>(1) / 2, 1, 0.0f, 0xFFFFFFFF
 					);
 					//Novice::DrawSpriteRect(0, 300, 0, 0, 176, 128, whiteDog, static_cast<float>(1) / 2, 1, 0.0f, WHITE);
@@ -785,7 +821,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				{
 					Novice::DrawSpriteRect
 					(
-						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius.x), (int)player.newPosY,
+						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius.x), (int)player.newPosY - 5,
 						176, 0, 352, 128, whiteDog, static_cast<float>(2) / 2, 1, 0.0f, 0xFFFFFFFF
 					);
 					//Novice::DrawSpriteRect(0, 300, 176, 0, 356, 128, whiteDog, static_cast<float>(2) / 2, 1, 0.0f, WHITE);
