@@ -98,8 +98,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	JumpPower jumpPower =
 	{
-		15.0f,//低いとき
-		20.0f//高いとき
+		18.0f,//低いとき
+		22.0f//高いとき
 	};
 
 	const int jumpBottanPower = 15;
@@ -125,6 +125,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		red,
 	};
 
+	int isDogJump = 0;
+
 	const int dogMaxAnimationCount = 60;
 	int dogAnimationCount = dogMaxAnimationCount;
 	//========================================
@@ -136,11 +138,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	const int maxTrap = 10;
 
 	Trap trap[maxTrap]{};
-
-	int mudAnimetionCount = 0;
-	const int maxMudAnimetionCount = 120;
-
-	int isMudAnimetion = 0;
 	
 	//========================================
 	//========================================
@@ -178,7 +175,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Item item[maxItem]{};
 	for (int i = 0; i < maxItem; i++)
 	{
-		item[i].radius = 20;
+		item[i].radius = 40;
 
 		item[i].position = { (float)((worldEnd / maxItem) * (i + 1)) , item[i].radius };
 
@@ -219,6 +216,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// その他の変数
 	//========================================
 	int gameCount = 0;
+
+
+	//====================
+	//たろうまる
+	int Time1 = 120;
+
+	//3秒初期化
+	int TaroumaruX = 1280;
+
+	//5秒初期化
+	int Wait = 300;
+
+	int TarouColor = 0xFFFFFFFF;
+
+
+	//====================
+	
 	//========================================
 	//========================================
 
@@ -248,28 +262,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int petOwner = Novice::LoadTexture("./Resources/object/petOwner.png");
 	int MuddyWater = Novice::LoadTexture("./Resources/object/Muddy_Water.png");
 	int Taroumaru = Novice::LoadTexture("./Resources/object/Taroumaru.png");
-	int mudAnimetionGH = Novice::LoadTexture("./Resources/object/Sizuku-animation.png");
+	int redStandDog = Novice::LoadTexture("./Resources/object/RedStandDog.png");
+	int blackStandDog = Novice::LoadTexture("./Resources/object/BlackStandDog.png");
+	int whiteStandDog = Novice::LoadTexture("./Resources/object/WhiteStandDog.png");
 
 	//====================
-	//====================
-
-	//====================
-	//たろうまる
-	int Time1 = 120;
-
-	//3秒初期化
-	int TaroumaruX = 1280;
-
-	//5秒初期化
-	int Wait = 300;
-
-	int TarouColor = 0xFFFFFFFF;
-
-
 	//====================
 
 	//========================================
 	//========================================
+	
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -368,6 +370,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				dogColorLottery = rand() % 100 + 1;
 
+				TaroumaruX = 1280;
+
+				Wait = 300;
+
 				if (dogColorLottery >= 95)//白
 				{
 					dogColor = white;
@@ -426,16 +432,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				playerHitCount++;
 			}
 
-			if (gameCount > 0)
+			if (gameCount >= 0)
 			{
 				gameCount++;
 			}
-			if (gameCount > 1200)
+			if (gameCount > 1680)
 			{
 				scene = GAME_OVER;
 			}
-
-			isMudAnimetion = 0;
 
 			//========================================
 			//========================================
@@ -521,6 +525,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			if (player.worldPosition.y > player.radius.y)
 			{
 				player.velocity.y += player.accelecion.y;
+				isDogJump = 1;
 
 			}
 			else if (player.worldPosition.y < player.radius.y)
@@ -528,10 +533,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				player.worldPosition.y = player.radius.y;
 				player.velocity.y = 0.0f;
 				jumpBottanCount = 0;
+				isDogJump = 0;
 			}
 			else if (player.worldPosition.y == player.radius.y)
 			{
-				if ((keys[DIK_SPACE] != 0 && preKeys[DIK_SPACE] != 0))//スペースキーを押している間
+				if ((keys[DIK_SPACE] != 0 && preKeys[DIK_SPACE] != 0) && (Wait > 172))//スペースキーを押している間
 				{
 					jumpBottanCount++;
 				}
@@ -588,7 +594,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						else
 						{
 							playerHitCount = -120;
-							isMudAnimetion = 1;
 						}
 					}
 				}
@@ -603,20 +608,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						playerHitCount = 120;
 					}
 				}
-			}
-			//========================================
-			//========================================
-
-			//========================================
-			// 泥のアニメーチョン
-			//========================================
-			if (isMudAnimetion == 1)
-			{
-				mudAnimetionCount += 1;
-			}
-			if (mudAnimetionCount > maxMudAnimetionCount)
-			{
-				mudAnimetionCount = 0;
 			}
 			//========================================
 			//========================================
@@ -744,7 +735,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					(int)(item[i].edgePosition.right - scrollPosX), (int)((item[i].edgePosition.up - 500.0f) * -1),
 					(int)(item[i].edgePosition.left - scrollPosX), (int)((item[i].edgePosition.down - 500.0f) * -1),
 					(int)(item[i].edgePosition.right - scrollPosX), (int)((item[i].edgePosition.down - 500.0f) * -1),
-					1, 1, 64, 64, bone, WHITE
+					1, 1, 128, 128, bone, WHITE
 				);
 			}
 			//========================================
@@ -782,23 +773,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 			//========================================
 			//========================================
-
-			//========================================
-			// 泥のアニメーション描画
-			//========================================
-
-			if (isMudAnimetion == 1)
-			{
-				Novice::DrawSpriteRect
-				(
-					(int)(player.edgePosition.right - backPage.pos1.x  - 30), (int)((player.edgePosition.down - 500.0f) * -1) - 25,
-					50, 0, 25, 25, mudAnimetionGH, static_cast<float>(1) / 3, 1, 0.0f, WHITE
-				);
-			}
-			//========================================
-			//========================================
-
-			///=====たろうまるの名前を呼ぶうううううううううううううううううううううううううううう=====///
+			 
+			//=====たろうまるの名前を呼ぶうううううううううううううううううううううううううううう=====///
 			Novice::DrawSprite(TaroumaruX, 0, Taroumaru, 1, 1, 0.0f, TarouColor);
 			///=====たろうまるの名前を呼ぶうううううううううううううううううううううううううううう=====///
 
@@ -808,7 +784,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			if (dogColor == white)
 			{
-				if (dogAnimationCount >= dogMaxAnimationCount / 2 && dogAnimationCount <= dogMaxAnimationCount)
+				if (Wait > 172)
+				{
+					Novice::DrawSpriteRect
+					(
+						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius.x + 20), (int)player.newPosY - 5,
+						0, 0, 128, 128, whiteStandDog, 1, 1, 0.0f, 0xFFFFFFFF
+					);
+				}
+				else if (isDogJump == 1)
+				{
+					Novice::DrawSpriteRect
+					(
+						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius.x), (int)player.newPosY - 5,
+						176, 0, 352, 128, whiteDog, static_cast<float>(2) / 2, 1, 0.0f, 0xFFFFFFFF
+					);
+				}
+				else if (dogAnimationCount >= dogMaxAnimationCount / 2 && dogAnimationCount <= dogMaxAnimationCount)
 				{
 					Novice::DrawSpriteRect
 					(
@@ -817,7 +809,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					);
 					//Novice::DrawSpriteRect(0, 300, 0, 0, 176, 128, whiteDog, static_cast<float>(1) / 2, 1, 0.0f, WHITE);
 				}
-				if (dogAnimationCount >= 0 && dogAnimationCount <= dogMaxAnimationCount / 2)
+				else if (dogAnimationCount >= 0 && dogAnimationCount <= dogMaxAnimationCount / 2)
 				{
 					Novice::DrawSpriteRect
 					(
@@ -830,7 +822,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			if (dogColor == black)
 			{
-				if (dogAnimationCount >= dogMaxAnimationCount / 2 && dogAnimationCount <= dogMaxAnimationCount)
+				if (Wait > 172)
+				{
+					Novice::DrawSpriteRect
+					(
+						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius.x + 20), (int)player.newPosY - 5,
+						0, 0, 128, 128, blackStandDog, 1, 1, 0.0f, 0xFFFFFFFF
+					);
+				}
+				else if(isDogJump == 1)
+				{
+					Novice::DrawSpriteRect
+					(
+						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius.x + 20), (int)player.newPosY - 5,
+						176, 0, 352, 128, blackDog, static_cast<float>(2) / 2, 1, 0.0f, WHITE
+					);
+				}
+				else if (dogAnimationCount >= dogMaxAnimationCount / 2 && dogAnimationCount <= dogMaxAnimationCount)
 				{
 					Novice::DrawSpriteRect
 					(
@@ -838,7 +846,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						0, 0, 176, 128, blackDog, static_cast<float>(1) / 2, 1, 0.0f, WHITE
 					);
 				}
-				if (dogAnimationCount >= 0 && dogAnimationCount <= dogMaxAnimationCount / 2)
+				else if (dogAnimationCount >= 0 && dogAnimationCount <= dogMaxAnimationCount / 2)
 				{
 					Novice::DrawSpriteRect
 					(
@@ -851,7 +859,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			if (dogColor == red)
 			{
-				if (dogAnimationCount >= dogMaxAnimationCount / 2 && dogAnimationCount <= dogMaxAnimationCount)
+				if (Wait > 172)
+				{
+					Novice::DrawSpriteRect
+					(
+						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius.x + 20), (int)player.newPosY - 5,
+						0, 0, 128, 128, redStandDog, static_cast<float>(1) / 1, 1, 0.0f, WHITE
+					);
+				}
+				else if (isDogJump == 1)
+				{
+					Novice::DrawSpriteRect
+					(
+						(int)player.worldPosition.x - ((int)backPage.pos1.x + (int)player.radius.x + 20), (int)player.newPosY - 5,
+						176, 0, 352, 128, redDog, static_cast<float>(2) / 2, static_cast<float>(2) / 2, 0.0f, WHITE
+					);
+				}
+				else if (dogAnimationCount >= dogMaxAnimationCount / 2 && dogAnimationCount <= dogMaxAnimationCount)
 				{
 					Novice::DrawSpriteRect
 					(
@@ -859,7 +883,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						0, 0, 176, 128, redDog, static_cast<float>(1) / 2, 1, 0.0f, WHITE
 					);
 				}
-				if (dogAnimationCount >= 0 && dogAnimationCount <= dogMaxAnimationCount / 2)
+				else if (dogAnimationCount >= 0 && dogAnimationCount <= dogMaxAnimationCount / 2)
 				{
 					Novice::DrawSpriteRect
 					(
@@ -900,27 +924,28 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			Novice::DrawSprite
 			(
 				(int)(goal.position.x - (goal.radius + scrollPosX)), (int)(goal.newPosY - goal.radius),
-				petOwner, 2.0f, 2.0f, 0.0f, WHITE
+				petOwner, 1.5f, 1.5f, 0.0f, WHITE
 			);
 			//========================================
 			//========================================
 
 
-			Novice::DrawLine(0, 500, 20000, 500, RED);
+			//Novice::DrawLine(0, 500, 20000, 500, RED);
 
 
-			Novice::ScreenPrintf(0, 0, "(%d)", (int)player.worldPosition.x);
+			//Novice::ScreenPrintf(0, 0, "(%d)", (int)player.worldPosition.x);
 
-			Novice::ScreenPrintf(0, 20, "%d", playerHitCount);
+			//Novice::ScreenPrintf(0, 20, "%d", playerHitCount);
 
-			for (int i = 0; i < maxTrap; i++)
-			{
-				Novice::ScreenPrintf(i * 40, 40, "%.0f", trap[i].position.x - (trap[i].radius));
-			}
+			//for (int i = 0; i < maxTrap; i++)
+			//{
+			//	Novice::ScreenPrintf(i * 40, 40, "%.0f", trap[i].position.x - (trap[i].radius));
+			//}
 
-			Novice::ScreenPrintf(30, 60, "%d", jumpBottanCount);
+			//Novice::ScreenPrintf(30, 60, "%d", jumpBottanCount);
+			//Novice::ScreenPrintf(0, 120, "%d", isDogJump);
 
-			Novice::ScreenPrintf(0, 80, "%d", gameCount);
+			
 
 			break;
 
